@@ -23,20 +23,26 @@ export default defineConfig({
     use: {
         baseURL: process.env.BASE_URL,
         trace: 'on-first-retry',
+        screenshot: 'only-on-failure',
+        video: 'retain-on-failure',
     },
 
     projects: [
+
+        // Login and save authentication
+        {
+            name: 'setup',
+            testMatch: '**/auth.setup.ts',
+        },
+
+        // Actual test cases
         {
             name: 'chromium',
-            use: { ...devices['Desktop Chrome'] },
-        },
-        {
-            name: 'firefox',
-            use: { ...devices['Desktop Firefox'] },
-        },
-        {
-            name: 'webkit',
-            use: { ...devices['Desktop Safari'] },
+            testMatch: '**/*.spec.ts',
+            dependencies: ['setup'],
+            use: {
+                ...devices['Desktop Chrome'],
+            },
         },
     ],
 });
